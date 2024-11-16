@@ -79,10 +79,10 @@ public class Principal {
                         System.out.println("Cerrando la aplicacion");
                         break;
                     default:
-                        System.out.println("Opcion no valida");
+                        System.out.println("Opcion no valida, intente nuevamente");
                 }
             } else {
-                System.out.println("Opción no válida");
+                System.out.println("Opción no válida, intente nuevamente");
                 teclado.next();
             }
         }
@@ -91,7 +91,7 @@ public class Principal {
 
 
     private void buscarLibro() {
-        System.out.println("Ingrese el nombre del libro que desea agregar:");
+        System.out.println("Ingrese el nombre del libro que desea agregar: ");
         var tituloLibro = teclado.nextLine();
         var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ", "+"));
         System.out.println("Respuesta de la API: " + json);
@@ -111,7 +111,7 @@ public class Principal {
                 libro.setAutor(autor);
                 libroRepository.save(libro);
                 System.out.println(libro);
-                System.out.println("Libro agregado con exito");
+                System.out.println("Libro registrado con exito");
 
             } else {
                 System.out.printf("---------------------------------------------\n");
@@ -146,7 +146,7 @@ public class Principal {
 
     public void listarLibrosPorIdioma() {
         idiomas = libroRepository.idiomasLibros();
-        System.out.printf("------------------IDIOMAS--------------------\n");
+        System.out.printf("***IDIOMAS***\n");
         idiomas.stream().forEach(System.out::println);
         System.out.printf("---------------------------------------------\n");
         System.out.println("Ingresa el idioma por el que deseas buscar: ");
@@ -160,13 +160,14 @@ public class Principal {
     }
 
     public void estadisticaLibrosRegistrados() {
-        DoubleSummaryStatistics estadictica = libroRepository.findAll().stream()
+        DoubleSummaryStatistics estadistica = libroRepository.findAll().stream()
                 .filter(l -> l.getNumeroDeDescargas() > 0)
                 .collect(Collectors.summarizingDouble(Libro::getNumeroDeDescargas));
-        System.out.println("Cantidad media de descargas: " + estadictica.getAverage());
-        System.out.println("Cantidad maxima de descargas: " + estadictica.getMax());
-        System.out.println("Cantidad minima de descargas: " + estadictica.getMin());
-        System.out.println("Cantidad de resgistros evaluados para calcular las estadisticas: " + estadictica.getCount());
+        System.out.println("\n***ESTADISTICA DE LIBROS REGISTRADOS***");
+        System.out.println("Cantidad media de descargas: " + estadistica.getAverage());
+        System.out.println("Cantidad maxima de descargas: " + estadistica.getMax());
+        System.out.println("Cantidad minima de descargas: " + estadistica.getMin());
+        System.out.println("Cantidad de registros evaluados para calcular las estadisticas: " + estadistica.getCount());
     }
 
     public void top10LibrosDescargados() {
@@ -175,10 +176,9 @@ public class Principal {
 
     public void buscarAutorRegistrado() {
         System.out.println("Nombre del autor que deseas buscar: ");
-        var nombreAutor = teclado.nextLine().toLowerCase().trim();
+        var nombreAutor = teclado.nextLine();
         var autor = autorRepository.findByNombre(nombreAutor);
         System.out.println("Buscando autor con nombre: " + nombreAutor);
-        System.out.println(autor);
         if (autor.isEmpty()) {
             System.out.println("El autor no se encuentra registrado");
         } else {
